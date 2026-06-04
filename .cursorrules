@@ -1,0 +1,45 @@
+# MagicSquare_1004 — Cursor Rules (초안)
+
+## 언어·응답
+- 항상 한국어로 답한다.
+- TDD 작업 시 응답 맨 앞에 `Phase: RED|GREEN|REFACTOR`, `Layer: entity|control|boundary`, `Track: Logic|UI` 를 선언한다.
+- git commit / push / branch 생성은 사용자가 명시적으로 요청할 때만 수행한다.
+
+## 도메인 (MagicSquare_1004)
+- 4×4 **부분 마방진**: 셀 값은 0(빈칸) 또는 1~16.
+- 빈칸(0)은 **정확히 2개**. 1~16은 중복 없음.
+- 마방진 **상수 34** — 행·열·대각선(10선) 각각의 합 목표.
+- 정답 출력 형식: `int[6]` → `[r1, c1, n1, r2, c2, n2]`. 좌표는 **1-index** (1~4).
+- 오류 코드 **E001~E007** (boundary 정의·발행). **entity** 계층은 E001~E005 처리·발행 **금지**.
+
+## 아키텍처 (ECB)
+- 의존 방향: **boundary → control → entity** (단방향).
+- **entity** 에서 control / boundary / 상위 계층 import **금지**.
+- control 은 entity 만, boundary 는 control 만 호출한다.
+- Dual-Track TDD:
+  - **Logic Track** (entity, control): Domain Mock **금지**. 순수 로직·규칙만 테스트.
+  - **UI Track** (boundary): control Mock **허용**. 입출력·오류 매핑·표시 검증.
+
+## 테스트 명명·배치
+- Logic 테스트 ID: `D-*` — 파일명 `test_d_*.py` — `tests/entity/`, `tests/control/`
+- UI 테스트 ID: `U-*` — 파일명 `test_u_*.py` — `tests/boundary/`
+- src ↔ tests 계층 디렉터리 1:1 대응 유지.
+
+## TDD 규칙
+- 사이클: **RED → GREEN → REFACTOR**. Phase 건너뛰기 금지.
+- RED: 실패하는 테스트만. GREEN: 테스트 통과 최소 구현. REFACTOR: 동작 유지하며 구조 정리.
+- `assert` 완화, `@pytest.mark.skip`, `xfail` 로 RED 회피 **금지**.
+- Mom Test 증거(10선 검증 누락, 20분 낭비)와 연결되지 않은 테스트·기능 추가 금지.
+
+## MagicConstant (SSOT)
+- `34`, `16`, `4`(격자 크기), 빈칸 개수 `2` 등 도메인 상수는 **한 곳**에서만 정의한다.
+- 소스·테스트 전역에 리터럴 `34` / `16` **산재 금지**. 상수 모듈 또는 entity SSOT 참조.
+
+## 구현 범위 (v0.1)
+- 우선: **검증(Validation)** — Rule, Command, SquareValidator.
+- Out of Scope: GUI 풀스택, Solver/MissingFinder 자동 채우기, TDD 방법론 설교.
+- 표면 문제(“체커 앱 만든다”)를 주제로 삼지 않는다. 진짜 문제: **다중 조건 검증 누락**.
+
+## 참고 문서
+- `Report/01.MagicSquare_ProblemDefinition_Report.md`, `Report/02` (있을 경우)
+- `docs/PRD.md`
