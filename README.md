@@ -34,6 +34,9 @@ Magic Square = 4×4, 1~16, 모든 행·열·대각선 합 = 34
 |------|------|
 | [Report/01.MagicSquare_ProblemDefinition_Report.md](Report/01.MagicSquare_ProblemDefinition_Report.md) | Mom Test + 주제 선정 + 범위 |
 | [docs/PRD.md](docs/PRD.md) | 기능·비기능 요구사항, 성공 기준 |
+| [docs/RED-Phase-Todo.md](docs/RED-Phase-Todo.md) | Dual-Track RED 단계 설계표·Todo (SSOT) |
+| [report/02.RED_D-LOC-01_Session_Report.md](report/02.RED_D-LOC-01_Session_Report.md) | RED 세션 보고서 (D-LOC-01) |
+| [prompting/08.transcript-red-d-loc-01-export.md](prompting/08.transcript-red-d-loc-01-export.md) | RED D-LOC-01 세션 트랜스크립트 |
 | [report/01.mom-test-report.md](report/01.mom-test-report.md) | STEP 1 Mom Test 원본 보고서 |
 | [prompting/01.step1-mom-test-prompt.md](prompting/01.step1-mom-test-prompt.md) | STEP 1 Mom Test 인터뷰 프롬프트 |
 | [prompting/02.transcript-export.md](prompting/02.transcript-export.md) | STEP 1 인터뷰 트랜스크립트 |
@@ -68,6 +71,71 @@ magicsquare/
 | Skill | ✅ 줄 합 검사 등 |
 | Test Loop | ✅ pytest |
 | Entity / Control / Boundary | ⬜ 다음 세션 |
+
+---
+
+## RED Phase 체크리스트
+
+상세 설계표(Given / Then / Expected RED Failure)는 [docs/RED-Phase-Todo.md](docs/RED-Phase-Todo.md)를 참고한다.  
+**규칙:** 실패 테스트만 작성 · `src/` 구현 금지 · RED 직후 `pytest`로 **FAIL** 확인.
+
+### 공통
+
+- [ ] RED → GREEN → REFACTOR 순서 준수
+- [ ] `skip` / `xfail` / assert 완화로 RED 회피하지 않음
+- [ ] Mom Test·PRD AC와 무관한 테스트 추가하지 않음
+
+### Boundary — UI Track (`tests/boundary/test_u_*.py`)
+
+**입력 검증 (U-IN)**
+
+- [ ] **U-IN-01** — `grid=None` → `E003 INVALID_NULL`
+- [ ] **U-IN-02** — `grid=3×4` → `E001 INVALID_SIZE`
+- [ ] **U-IN-03** — 빈칸 0개 → `E002 INVALID_BLANKS`
+
+**출력·흐름**
+
+- [ ] **U-OUT-01** — 유효 입력 G1 → `len(result) == 6`
+- [ ] **U-FLOW-02** — `grid=None` → `execute()` 0회 호출
+
+**Track 완료**
+
+- [ ] U-IN / U-OUT / U-FLOW 테스트 파일 작성 완료
+- [ ] entity 직접 import 없음 (control 경유)
+- [ ] E001~E007는 boundary에서만 정의·발행
+
+### Logic — Logic Track (`tests/entity/`, `tests/control/`, `test_d_*.py`)
+
+**Mom Test AC (필수)**
+
+- [ ] **D-001** (AC-4) — 전 조건 통과 → `ok is True`, `violations == []`
+- [ ] **D-002** (AC-1) — 대각선 검사 누락 시나리오 → 반드시 실패
+- [ ] **D-003** (AC-2) — 행·열만 34, 대각선 틀림 → `ok is False`
+- [ ] **D-004** (AC-3) — 실패 시 `violations`에 위반 선 식별
+
+**입력·규칙**
+
+- [ ] **D-005** — 빈칸(0) ≠ 2개 → `ok is False`
+- [ ] **D-006** — 1~16 중복·범위 밖 → `ok is False`
+
+**10선 합 34**
+
+- [ ] **D-007** — 행 합 ≠ 34 → 실패 + 해당 행 in `violations`
+- [ ] **D-008** — 열 합 ≠ 34 → 실패 + 해당 열 in `violations`
+- [ ] **D-009** — 대각선 ↘ 합 ≠ 34 → `ok is False`
+- [ ] **D-010** — 대각선 ↙ 합 ≠ 34 → `ok is False`
+
+**Track 완료**
+
+- [ ] D-001~D-010 테스트 파일 작성 완료
+- [ ] Domain Mock 없음 (`patch` / `monkeypatch` on Validator·entity 금지)
+- [ ] entity/control에서 E001~E007 문자열 발행 없음
+
+### RED Phase Review
+
+- [ ] Boundary: U-IN-01~03, U-OUT-01, U-FLOW-02 — 각각 `pytest` **FAIL** 확인
+- [ ] Logic: D-001~D-010 — 각각 `pytest` **FAIL** 확인
+- [ ] 다음: **GREEN** — 최소 `src/` 구현으로 위 테스트 통과
 
 ---
 
