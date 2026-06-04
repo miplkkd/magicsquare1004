@@ -39,6 +39,8 @@ Magic Square = 4×4, 1~16, 모든 행·열·대각선 합 = 34
 | [report/03.GREEN_D-LOC-01_Session_Report.md](report/03.GREEN_D-LOC-01_Session_Report.md) | GREEN 세션 보고서 (D-LOC-01) |
 | [prompting/08.transcript-red-d-loc-01-export.md](prompting/08.transcript-red-d-loc-01-export.md) | RED D-LOC-01 세션 트랜스크립트 |
 | [prompting/09.transcript-green-d-loc-01-export.md](prompting/09.transcript-green-d-loc-01-export.md) | GREEN D-LOC-01 세션 트랜스크립트 |
+| [report/04.Golden_Master_D-SOL-01_Session_Report.md](report/04.Golden_Master_D-SOL-01_Session_Report.md) | Golden Master 세션 보고서 (D-SOL-01) |
+| [prompting/10.transcript-golden-d-sol-01-export.md](prompting/10.transcript-golden-d-sol-01-export.md) | Golden Master D-SOL-01 트랜스크립트 |
 | [report/01.mom-test-report.md](report/01.mom-test-report.md) | STEP 1 Mom Test 원본 보고서 |
 | [prompting/01.step1-mom-test-prompt.md](prompting/01.step1-mom-test-prompt.md) | STEP 1 Mom Test 인터뷰 프롬프트 |
 | [prompting/02.transcript-export.md](prompting/02.transcript-export.md) | STEP 1 인터뷰 트랜스크립트 |
